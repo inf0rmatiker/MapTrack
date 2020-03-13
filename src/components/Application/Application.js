@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import { getApiKey } from '../../GoogleApiKey';
+
 import {Card, CardBody, CardHeader, Container} from 'reactstrap';
 import GoogleMapReact from 'google-map-react';
 
@@ -21,7 +23,7 @@ export default class Application extends Component {
     return (
       <div style={{ height: '100vh', width: '100%' }}>
         <GoogleMapReact
-          bootstrapURLKeys={{ key: 'AIzaSyBscS7Up4h09zW84i8jfmpuzPIgjjUEsrM' }}
+          bootstrapURLKeys={{ key: getApiKey() }} 
           defaultCenter={this.state.center}
           defaultZoom={this.state.zoom}
         >
