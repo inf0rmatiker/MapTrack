@@ -1,6 +1,10 @@
 import React, {Component} from 'react';
 import Application from './Application/Application.js';
+import Footer from './Margins/Footer'
+import Header from './Margins/Header'
+
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.css';
 
 export default class App extends Component {
  
@@ -13,11 +17,11 @@ export default class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
+        <div className="csu-branding">
+          <Header/>
           <Application/>
-        </header>
-      </div>
+          <Footer/>
+        </div>
     );
   }
 
