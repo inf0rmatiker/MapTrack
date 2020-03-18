@@ -1,17 +1,19 @@
 import React, {Component} from 'react';
-import Application from './Application/Application.js';
-import Footer from './Margins/Footer'
-import Header from './Margins/Header'
 
-import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
+import './App.css';
+import Header from './Margins/Header';
+import Application from './Application/Application';
+import Footer from './Margins/Footer';
+
 
 export default class App extends Component {
  
   constructor (props){
     super(props);
     
-    this.state = {};
+    this.state = {
+    };
 
   } 
 
