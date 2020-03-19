@@ -93,10 +93,6 @@ export default class Application extends Component {
       let tempSouthWestCorner = tempBounds.getSouthWest();
       let tempNorthEastCorner = tempBounds.getNorthEast();
 
-      if (DEBUG) {
-        console.log("Initial NE_CORNER lat: " + tempNorthEastCorner.lat);
-      }
-
       // Update oldBounds
       this.updateBounds(tempNorthEastCorner, tempSouthWestCorner);
     }
@@ -147,7 +143,7 @@ export default class Application extends Component {
     this.setState({'oldBounds': oldBoundsCopy});
   }
 
-  logActions() {
+  getActionsAsString() {
     if (this.state.userActions) {
       let actions = this.state.userActions;
       let collectedActions = "";
@@ -159,7 +155,7 @@ export default class Application extends Component {
         }
       }
 
-      console.log(collectedActions);
+      return collectedActions;
     }
   }
 
@@ -186,7 +182,7 @@ export default class Application extends Component {
               Control Panel
             </CardHeader>
             <CardBody>
-              <Button color="primary" size="lg" onClick={this.logActions}>See Results</Button>
+              <Button className='btn-csu' size="lg" onClick={this.logActions}>See Results</Button>
             </CardBody>
           </Card>
         </div>
