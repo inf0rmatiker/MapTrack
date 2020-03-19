@@ -14,6 +14,7 @@ export default class ControlPanel extends Component {
     this.getActionsAsString = this.getActionsAsString.bind(this);
     this.clearUserActions = this.clearUserActions.bind(this);
     this.toggleSession = this.toggleSession.bind(this);
+    this.saveActionsAsFile = this.saveActionsAsFile.bind(this);
   }
 
   getActionsAsString() {
@@ -46,15 +47,50 @@ export default class ControlPanel extends Component {
     this.props.updateSessionToggle(!this.props.isWithinSession);
   }
 
+  /*
+    Pure cancer. Uses javascript Blob object to save a file, with compatibility
+    across most major browsers. Read more on blobs here:
+    https://developer.mozilla.org/en-US/docs/Web/API/Blob
+
+    Code taken from Awesomeness01 on StackOverflow:
+    https://stackoverflow.com/questions/13405129/javascript-create-and-save-file
+   */
+  saveActionsAsFile() {
+    let filename = "userActions.json";
+    let stringifiedActions = JSON.stringify(this.props.userActions);
+
+    var file = new Blob([stringifiedActions], {type: 'application/json'});
+    if (window.navigator.msSaveOrOpenBlob) // IE10+
+      window.navigator.msSaveOrOpenBlob(file, filename);
+    else { // Others
+      var a = document.createElement("a"),
+          url = URL.createObjectURL(file);
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function() {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 0);
+    }
+  }
+
   render() {
     let sessionButtonValue = this.props.isWithinSession ? "End Session" : "Start Session";
+
 
     return (
       <Card>
         <CardBody>
           <ButtonGroup>
-            <Button className='btn-csu' size="lg" onClick={this.toggleSession}>
+            <Button className='btn-csu' size="lg" onClick={this.toggleSession} active>
               {sessionButtonValue}
+            </Button>
+            <Button size="lg" active={this.props.userActions.length > 0}
+                    onClick={this.saveActionsAsFile}
+                    disabled={this.props.userActions.length === 0}>
+              Download Results
             </Button>
           </ButtonGroup>
         </CardBody>
