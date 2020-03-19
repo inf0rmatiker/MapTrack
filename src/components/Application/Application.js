@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import Map from './Map';
-import {Card, CardBody, CardHeader, Button} from 'reactstrap';
-
-const DEBUG = true;
+import ControlPanel from './ControlPanel';
 
 /* 
   Maintains the body of the application. Header and footer should
@@ -23,51 +21,34 @@ export default class Application extends Component {
     super(props);
 
     this.state = {
-      userActions: []
+      userActions: [],
+      isWithinSession: false
     };
 
 
-    this.addAction = this.addAction.bind(this);
-    this.getActionsAsString = this.getActionsAsString.bind(this);
+    this.updateUserActions = this.updateUserActions.bind(this);
+    this.updateSessionToggle = this.updateSessionToggle.bind(this);
   }
 
-  addAction(action) {
-    let actions = this.state.userActions;
-    actions.push(action);
-    this.setState({'userActions': actions});
+  updateUserActions(newActions) {
+    this.setState({'userActions': newActions});
   }
 
-  getActionsAsString() {
-    if (this.state.userActions) {
-      let actions = this.state.userActions;
-      let collectedActions = "";
-      for (let i = 0; i < actions.length; i++) {
-        let actionStr = actions[i].action;
-        collectedActions += actionStr;
-        if (i !== (actions.length - 1)) {
-          collectedActions += ",";
-        }
-      }
-
-      if (DEBUG) console.log(collectedActions);
-
-      return collectedActions;
-    }
+  updateSessionToggle(toggleValue) {
+    this.setState({'isWithinSession': toggleValue});
   }
 
 
   render() {
     return (
         <div className="application-width">
-          <Map addAction={this.addAction}/>
-          <Card>
-            <CardHeader>
-              Control Panel
-            </CardHeader>
-            <CardBody>
-              <Button className='btn-csu' size="lg" onClick={this.getActionsAsString}>See Results</Button>
-            </CardBody>
-          </Card>
+          <Map          updateUserActions={this.updateUserActions}
+                        userActions={this.state.userActions}
+                        isWithinSession={this.state.isWithinSession}/>
+          <ControlPanel updateUserActions={this.updateUserActions}
+                        userActions={this.state.userActions}
+                        isWithinSession={this.state.isWithinSession}
+                        updateSessionToggle={this.updateSessionToggle}/>
         </div>
     );
   }

@@ -7,7 +7,7 @@ import {getApiKey} from "../../GoogleApiKey";
   Holds the Google Maps instance, and provides event listeners
   for the Google Maps API to track user actions.
  */
-export default class Application extends Component {
+export default class Map extends Component {
 
   constructor(props) {
     super(props);
@@ -31,6 +31,7 @@ export default class Application extends Component {
     this.zoomChangedCallback = this.zoomChangedCallback.bind(this);
     this.updateCenter = this.updateCenter.bind(this);
     this.updateBounds = this.updateBounds.bind(this);
+    this.addAction = this.addAction.bind(this);
   }
 
   handleApiLoaded(map, maps) {
@@ -45,18 +46,21 @@ export default class Application extends Component {
     let currentLat = currentCenter.lat();
     let currentLng = currentCenter.lng();
 
-    if (currentLng < this.state.center.lng) {
-      this.props.addAction({ action: "PAN_LEFT", interval: 0.0 } );
+    if (this.props.isWithinSession) {
+      if (currentLng < this.state.center.lng) {
+        this.addAction({ action: "PAN_LEFT", interval: 0.0 } );
+      }
+      else if (currentLng > this.state.center.lng) {
+        this.addAction( { action: "PAN_RIGHT", interval: 0.0 } );
+      }
+      else if (currentLat > this.state.center.lat) {
+        this.addAction( { action: "PAN_UP", interval: 0.0 } );
+      }
+      else if (currentLat < this.state.center.lat) {
+        this.addAction( { action: "PAN_DOWN", interval: 0.0 } );
+      }
     }
-    else if (currentLng > this.state.center.lng) {
-      this.props.addAction( { action: "PAN_RIGHT", interval: 0.0 } );
-    }
-    else if (currentLat > this.state.center.lat) {
-      this.props.addAction( { action: "PAN_UP", interval: 0.0 } );
-    }
-    else if (currentLat < this.state.center.lat) {
-      this.props.addAction( { action: "PAN_DOWN", interval: 0.0 } );
-    }
+
 
     // Update old latitude and longitude
     this.updateCenter(currentLat, currentLng);
@@ -78,11 +82,12 @@ export default class Application extends Component {
     let new_sw_corner = tempBounds.getSouthWest();
     let new_ne_corner = tempBounds.getNorthEast();
 
-    if (this.state.bounds.ne_corner.lat < new_ne_corner.lat()) {
-      this.props.addAction( { action: "ZOOM_OUT", interval: 0.0 });
-    }
-    else {
-      this.props.addAction( { action: "ZOOM_IN", interval: 0.0 });
+    if (this.props.isWithinSession) {
+      if (this.state.bounds.ne_corner.lat < new_ne_corner.lat()) {
+        this.addAction({action: "ZOOM_OUT", interval: 0.0});
+      } else {
+        this.addAction({action: "ZOOM_IN", interval: 0.0});
+      }
     }
 
     // Update bounds
@@ -103,6 +108,12 @@ export default class Application extends Component {
     oldBoundsCopy.sw_corner = {lat: sw_corner.lat(), lng: sw_corner.lng()};
 
     this.setState({'bounds': oldBoundsCopy});
+  }
+
+  addAction(action) {
+    let actions = this.props.userActions;
+    actions.push(action);
+    this.props.updateUserActions(actions);
   }
 
   render() {
