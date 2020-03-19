@@ -43,7 +43,7 @@ export default class Footer extends Component {
               {this.footerCopyright()}
             </div>
             <div className="footer-logo-wrapper">
-              <a href="http://www.colostate.edu/" className="company-sub-widget" target="_blank">
+              <a href="http://www.colostate.edu/" className="company-sub-widget" target="_blank" rel="noopener noreferrer">
                 <FooterLogo/>
               </a>
             </div>
