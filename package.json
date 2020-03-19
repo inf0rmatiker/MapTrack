@@ -36,6 +36,5 @@
   },
   "devDependencies": {
     "reactstrap": "^8.4.1"
-  },
-  "homepage": "https://www.cs.colostate.edu/~cacaleb"
+  }
 }
