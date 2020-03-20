@@ -1,9 +1,9 @@
 import React, {Component} from "react";
 import {Button, ButtonGroup, Card, CardBody} from "reactstrap";
+import Information from "./Information";
 
 /*
-  Holds the Google Maps instance, and provides event listeners
-  for the Google Maps API to track user actions.
+  Holds buttons to control sessions and manage report downloads.
  */
 export default class ControlPanel extends Component {
 
@@ -84,7 +84,7 @@ export default class ControlPanel extends Component {
       <Card>
         <CardBody>
           <ButtonGroup>
-            <Button className='btn-csu' size="lg" onClick={this.toggleSession} active>
+            <Button className='btn-csu' size="lg" onClick={this.toggleSession}>
               {sessionButtonValue}
             </Button>
             <Button size="lg" active={this.props.userActions.length > 0}
@@ -93,6 +93,7 @@ export default class ControlPanel extends Component {
               Download Results
             </Button>
           </ButtonGroup>
+          <Information/>
         </CardBody>
       </Card>
     );
