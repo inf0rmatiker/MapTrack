@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Button, Modal, ModalHeader, ModalBody, ModalFooter} from "reactstrap";
+import {Button, Modal, ModalHeader, ModalBody} from "reactstrap";
 import { FaInfo, FaPlus, FaMinus } from "react-icons/fa";
 
 export default class Information extends Component {
@@ -49,9 +49,6 @@ export default class Information extends Component {
             <ModalBody>
               {Information.instructions()}
             </ModalBody>
-            <ModalFooter>
-              <Button color="secondary" onClick={this.toggleModal}>Cancel</Button>
-            </ModalFooter>
           </Modal>
         </Button>
     );
