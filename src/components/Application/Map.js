@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Card, CardBody} from "reactstrap";
+import {Card, CardBody, Button} from "reactstrap";
 import GoogleMapReact from "google-map-react";
 import {getApiKey} from "../../GoogleApiKey";
 
@@ -32,6 +32,7 @@ export default class Map extends Component {
     this.updateCenter = this.updateCenter.bind(this);
     this.updateBounds = this.updateBounds.bind(this);
     this.addAction = this.addAction.bind(this);
+    this.getMapOptions = this.getMapOptions.bind(this);
   }
 
   handleApiLoaded(map, maps) {
@@ -116,18 +117,32 @@ export default class Map extends Component {
     this.props.updateUserActions(actions);
   }
 
+  getMapOptions(maps) {
+    return {
+      panControl: true,
+      zoomControlOptions: {
+        position: maps.ControlPosition.RIGHT_BOTTOM,
+        style: maps.ZoomControlStyle.SMALL
+      },
+      mapTypeControl: false,
+      scrollwheel: false,
+    };
+  }
+
   render() {
     return (
         <Card>
           <CardBody>
             <div style={{ height: '80vh', width: '100%' }}>
               <GoogleMapReact
+                  options={this.getMapOptions}
                   bootstrapURLKeys={{ key: getApiKey() }}
                   defaultCenter={this.state.center}
                   defaultZoom={this.state.zoom}
                   yesIWantToUseGoogleMapApiInternals
                   onGoogleApiLoaded={({ map, maps }) => this.handleApiLoaded(map, maps)}
               >
+                {/*<Button color="primary" size="lg">HELLO</Button>*/}
               </GoogleMapReact>
             </div>
           </CardBody>
