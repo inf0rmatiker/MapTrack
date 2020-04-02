@@ -22,6 +22,7 @@ export default class Map extends Component {
         lat: 40.559167,
         lng: -105.078056
       },
+      actionTime: null,
       zoom: 11
     };
 
@@ -45,19 +46,31 @@ export default class Map extends Component {
     let currentCenter = this.state.map.getCenter();
     let currentLat = currentCenter.lat();
     let currentLng = currentCenter.lng();
+    let interval = 0;
+
+
+    // Update timestamp (actionTime), and record interval between now and last timestamp
+    let lastTimeStamp = this.state.actionTime;
+    let currentTimeStamp = new Date();
+
+    if (lastTimeStamp) {
+      let resolution = Math.abs(currentTimeStamp - lastTimeStamp) / 1000;
+      interval = resolution % 60;
+    }
+    this.setState({'actionTime': currentTimeStamp});
 
     if (this.props.isWithinSession) {
       if (currentLng < this.state.center.lng) {
-        this.addAction({ action: "PAN_LEFT", interval: 0.0 } );
+        this.addAction({ action: "PAN_LEFT", interval: interval } );
       }
       else if (currentLng > this.state.center.lng) {
-        this.addAction( { action: "PAN_RIGHT", interval: 0.0 } );
+        this.addAction( { action: "PAN_RIGHT", interval: interval } );
       }
       else if (currentLat > this.state.center.lat) {
-        this.addAction( { action: "PAN_UP", interval: 0.0 } );
+        this.addAction( { action: "PAN_UP", interval: interval } );
       }
       else if (currentLat < this.state.center.lat) {
-        this.addAction( { action: "PAN_DOWN", interval: 0.0 } );
+        this.addAction( { action: "PAN_DOWN", interval: interval } );
       }
     }
 
