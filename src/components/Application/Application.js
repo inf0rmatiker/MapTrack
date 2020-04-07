@@ -22,16 +22,22 @@ export default class Application extends Component {
 
     this.state = {
       userActions: [],
+      actionTime: null,
       isWithinSession: false
     };
 
 
     this.updateUserActions = this.updateUserActions.bind(this);
+    this.updateActionTime = this.updateActionTime.bind(this);
     this.updateSessionToggle = this.updateSessionToggle.bind(this);
   }
 
   updateUserActions(newActions) {
     this.setState({'userActions': newActions});
+  }
+
+  updateActionTime(newTime) {
+    this.setState({'actionTime': newTime});
   }
 
   updateSessionToggle(toggleValue) {
@@ -43,9 +49,12 @@ export default class Application extends Component {
     return (
         <div className="application-width">
           <Map          updateUserActions={this.updateUserActions}
+                        updateActionTime={this.updateActionTime}
                         userActions={this.state.userActions}
+                        actionTime={this.state.actionTime}
                         isWithinSession={this.state.isWithinSession}/>
           <ControlPanel updateUserActions={this.updateUserActions}
+                        updateActionTime={this.updateActionTime}
                         userActions={this.state.userActions}
                         isWithinSession={this.state.isWithinSession}
                         updateSessionToggle={this.updateSessionToggle}/>

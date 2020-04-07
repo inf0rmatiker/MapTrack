@@ -22,7 +22,6 @@ export default class Map extends Component {
         lat: 40.559167,
         lng: -105.078056
       },
-      actionTime: null,
       zoom: 11
     };
 
@@ -49,44 +48,56 @@ export default class Map extends Component {
     let interval = 0;
 
 
-    // Update timestamp (actionTime), and record interval between now and last timestamp
-    let lastTimeStamp = this.state.actionTime;
-    let currentTimeStamp = new Date();
-
-    if (lastTimeStamp) {
-      let resolution = Math.abs(currentTimeStamp - lastTimeStamp) / 1000;
-      interval = resolution % 60;
-    }
-    this.setState({'actionTime': currentTimeStamp});
-
-    if (this.props.isWithinSession) {
-      if (currentLng < this.state.center.lng) {
-        this.addAction({ action: "PAN_LEFT", interval: interval } );
-      }
-      else if (currentLng > this.state.center.lng) {
-        this.addAction( { action: "PAN_RIGHT", interval: interval } );
-      }
-      else if (currentLat > this.state.center.lat) {
-        this.addAction( { action: "PAN_UP", interval: interval } );
-      }
-      else if (currentLat < this.state.center.lat) {
-        this.addAction( { action: "PAN_DOWN", interval: interval } );
-      }
-    }
-
-
-    // Update old latitude and longitude
-    this.updateCenter(currentLat, currentLng);
-
     // If we have not initialized the bounds, do it now
+    let tempBounds = this.state.map.getBounds();
+    let tempSouthWestCorner = tempBounds.getSouthWest();
+    let tempNorthEastCorner = tempBounds.getNorthEast();
     if (this.state.bounds.ne_corner === null || this.state.bounds.sw_corner === null) {
-      let tempBounds = this.state.map.getBounds();
-      let tempSouthWestCorner = tempBounds.getSouthWest();
-      let tempNorthEastCorner = tempBounds.getNorthEast();
-
       // Update bounds
       this.updateBounds(tempNorthEastCorner, tempSouthWestCorner);
     }
+
+    if (this.props.isWithinSession) {
+      let actionType = "NO_ACTION"; // Default action
+      if (currentLng < this.state.center.lng) {
+        actionType = "PAN_LEFT";
+      }
+      else if (currentLng > this.state.center.lng) {
+        actionType = "PAN_RIGHT";
+      }
+      else if (currentLat > this.state.center.lat) {
+        actionType = "PAN_UP";
+      }
+      else if (currentLat < this.state.center.lat) {
+        actionType = "PAN_DOWN";
+      }
+
+      // Update timestamp (actionTime), and record interval between now and last timestamp
+      let lastTimeStamp = this.props.actionTime;
+      let currentTimeStamp = new Date();
+
+      if (lastTimeStamp) {
+        let resolution = Math.abs(currentTimeStamp - lastTimeStamp) / 1000;
+        interval = resolution % 60;
+      }
+
+      this.props.updateActionTime(currentTimeStamp);
+
+
+
+      if (actionType !== "NO_ACTION") {
+        this.addAction({ action: actionType,
+          center: {lat: currentLat, lng: currentLng},
+          zoom: this.state.zoom,
+          bounds: { ne_corner: tempNorthEastCorner,
+            sw_corner: tempSouthWestCorner },
+          interval: interval } );
+      }
+
+    }
+
+    // Update old latitude and longitude
+    this.updateCenter(currentLat, currentLng);
   }
 
   // Callback function for Google Maps "bounds_changed" event listener.
@@ -95,11 +106,12 @@ export default class Map extends Component {
     let new_sw_corner = tempBounds.getSouthWest();
     let new_ne_corner = tempBounds.getNorthEast();
 
+    console.log(this.state.bounds);
     if (this.props.isWithinSession) {
       if (this.state.bounds.ne_corner.lat < new_ne_corner.lat()) {
-        this.addAction({action: "ZOOM_OUT", interval: 0.0});
+        this.addAction({action: "ZOOM_OUT", center: {lat: 0, lng: 0}, interval: 0.0}); // TODO: Update interval/center for zoom actions
       } else {
-        this.addAction({action: "ZOOM_IN", interval: 0.0});
+        this.addAction({action: "ZOOM_IN", center: {lat: 0, lng: 0}, interval: 0.0}); // TODO: Update interval/center for zoom actions
       }
     }
 

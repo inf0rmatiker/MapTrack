@@ -35,6 +35,7 @@ export default class ControlPanel extends Component {
 
   clearUserActions() {
     this.props.updateUserActions([]);
+    this.props.updateActionTime(null);
   }
 
   toggleSession() {
